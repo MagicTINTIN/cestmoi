@@ -1,0 +1,3 @@
+[submodule "qsj"]
+	path = qsj
+	url = git@github.com:MagicTINTIN/quisuisje-mod.git
