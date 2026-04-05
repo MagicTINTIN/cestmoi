@@ -57,8 +57,9 @@
 
     function handleMsg(msg) {
         switch (msg.type) {
-            case 'new':
-                console.log("new");
+            case 'new_achievement':
+                console.log(`New achievement! (${msg.name})`);
+                add_new_achievement_notification(msg.name, msg.icon)
                 break;
         }
     }

@@ -39,11 +39,11 @@ function get_who_profile_or_initialize(?PDO $dbm = null): array
 function increment_bon_points(int $amount, ?string $dest = null, ?PDO $dbm = null): void
 {
     global $_USER;
-    if (!$_USER) return [];
+    if (!$_USER) return;
     $dbm ??= dbmConnect();
 
     $res = do_profile_exists();
-    if ($res == []) return [];
+    if ($res == []) return;
 
     if ($dest) {
         $sql = "UPDATE member_profile SET points = points + ? WHERE username = ?";

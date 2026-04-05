@@ -10,6 +10,7 @@ $_ACHIEVEMENTS = [
     "cestbien"     => ["C'est bien", "Cumuler plus de 10 000 bon points.", "icons/cestbien.jpg", true],
     "easter"     => ["Chasseur d'œufs", "A trouvé tous les œufs de Pâques du site magictintin.fr", "icons/easter.jpg", true],
     "nexistepas"     => ["N'existe pas", "Contrairement à cet achievement qui existe", "icons/nexistepas.jpg", false],
+    "existetil"     => ["Existe-t-il ?", "Achievement shrödingeresque", "icons/existetil.jpg", false],
     "existe"     => ["Cet achievement existe", "Mais n'est pas obtenable", "icons/existe.jpg", false],
 ];
 
