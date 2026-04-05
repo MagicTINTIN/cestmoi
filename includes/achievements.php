@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../../../magictintin_db.php';
 include_once(__DIR__ . '/tools.php');
+include_once(__DIR__ . '/websocket.php');
 
 // id => [name, description, icon, obtainable]
 $_ACHIEVEMENTS = [
@@ -13,6 +14,18 @@ $_ACHIEVEMENTS = [
     "existetil"     => ["Existe-t-il ?", "Achievement shrödingeresque", "icons/existetil.jpg", false],
     "existe"     => ["Cet achievement existe", "Mais n'est pas obtenable", "icons/existe.jpg", false],
 ];
+
+function send_websocket_achievement(string $achievement_id, ?string $tag = "") : void {
+    global $_ACHIEVEMENTS;
+    if (!key_exists($achievement_id, $_ACHIEVEMENTS)) return;
+    $ach = $_ACHIEVEMENTS[$achievement_id];
+    $notif = [
+        "type" => "new_achievement",
+        "name" => $tag == "" ? $ach[0] : $ach[0] . " ($tag)",
+        "icon" => $ach[2]
+    ];
+    send_websocket_notification($notif);
+}
 
 function has_achievement(string $achievement_id, ?PDO $dbm = null): array
 {
@@ -41,6 +54,7 @@ function add_achievement(string $achievement_id, string $tags = "", ?PDO $dbm = 
     );
     $stmt->execute([$_USER["id"], htmlspecialchars($achievement_id), htmlspecialchars($tags)]);
 
+    send_websocket_achievement($achievement_id);
     return true;
 }
 
@@ -67,4 +81,7 @@ function add_achievement_tag(string $achievement_id, string $tag, ?PDO $dbm = nu
     $new_tags = implode(",", $arr);
     $stmt = $dbm->prepare("UPDATE achievements SET properties = ? WHERE qsj_id = ? AND achievement_id = ?");
     $stmt->execute([$new_tags, $ach["qsj_id"], $achievement_id]);
+    
+    send_websocket_achievement($achievement_id, $tag);
+    return true;
 }

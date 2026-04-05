@@ -2,7 +2,7 @@
 require_once __DIR__ . '/qsj/auth.php';
 
 $_QSJ  = new QsjAuth(require __DIR__ . '/qsj-config.php');
-$_USER = $_QSJ->getUser();
+$_USER = $_QSJ->getUser(true);
 $_HEAD_SETUP = false;
 $_FOOT_SETUP = false;
 $_WEBSOCKET_INSERTED = false;
