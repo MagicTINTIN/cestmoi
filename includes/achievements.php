@@ -4,15 +4,39 @@ require_once __DIR__ . '/../../../magictintin_db.php';
 include_once(__DIR__ . '/tools.php');
 include_once(__DIR__ . '/websocket.php');
 
+function cestmoi_get_icon_path($icon) : string {
+    if (file_exists(__DIR__ . "/../icons/$icon"))
+        return "cestmoi/icons/$icon";
+    return "cestmoi/icons/default.jpg";
+}
+
 // id => [name, description, icon, obtainable]
 $_ACHIEVEMENTS = [
-    "first_login"    => ["Premier Pas", "Se connecter pour la toute première fois.", "icons/first_login.jpg", true],
-    "collector"      => ["Collectionneur", "Déverrouiller au moins 10 achievements.", "icons/collector.jpg", true],
-    "cestbien"     => ["C'est bien", "Cumuler plus de 10 000 bon points.", "icons/cestbien.jpg", true],
-    "easter"     => ["Chasseur d'œufs", "A trouvé tous les œufs de Pâques du site magictintin.fr", "icons/easter.jpg", true],
-    "nexistepas"     => ["N'existe pas", "Contrairement à cet achievement qui existe", "icons/nexistepas.jpg", false],
-    "existetil"     => ["Existe-t-il ?", "Achievement shrödingeresque", "icons/existetil.jpg", false],
-    "existe"     => ["Cet achievement existe", "Mais n'est pas obtenable", "icons/existe.jpg", false],
+    "first_login"    => ["C'est un petit pas", "Se connecter pour la toute première fois", cestmoi_get_icon_path("first_login.jpg"), true],
+    "collector"      => ["Collectionneur", "Déverrouiller 10 achievements", cestmoi_get_icon_path("collector.jpg"), true],
+    "cestbien"     => ["C'est bien", "Cumuler plus de 10 000 bon points", cestmoi_get_icon_path("cestbien.jpg"), true],
+    "easter"     => ["Chasseur d'œufs", "A trouvé tous les œufs de Pâques du site magictintin.fr", cestmoi_get_icon_path("easter.jpg"), true],
+    "easter"     => ["Micasender", "Envoyer un message sur micasend", cestmoi_get_icon_path("micasend.jpg"), true],
+    // unobtainable
+    "nexistepas"     => ["N'existe pas", "Contrairement à cet achievement qui existe", cestmoi_get_icon_path("nexistepas.jpg"), false],
+    "existetil"     => ["Existe-t-il ?", "Achievement shrödingeresque", cestmoi_get_icon_path("existetil.jpg"), false],
+    "existe"     => ["Cet achievement existe", "Mais n'est pas obtenable", cestmoi_get_icon_path("existe.jpg"), false],
+    // special INSA
+    "ballincanal"     => ["Un poil fort !", "Envoyer une balle de golf dans le canal", cestmoi_get_icon_path("ballincanal.jpg"), false],
+    "gradaphix"     => ["GrADAphics", "Coder un moteur graphique en ADA", cestmoi_get_icon_path("gradaphics.jpg"), false],
+    "rust24"     => ["24h du Rust", "Coder en continu pendant 24h (en Rust)", cestmoi_get_icon_path("rust24.jpg"), false],
+    "cacaille"     => ["Ça caille con", "Sortir par -24°C", cestmoi_get_icon_path("cacaille.jpg"), false],
+    "esoteric"     => ["Et pourquoi pas ?", "Participer à un concours de code en codant en BrainFuck, Prolog et OCaml", cestmoi_get_icon_path("esoteric.jpg"), false],
+    "qrdraw"     => ["Rickroll à la main", "Dessiner un QRCode à la main", cestmoi_get_icon_path("cacaille.jpg"), false],
+    "chatva"     => ["Chat va ?", "Dessiner un chat dans un angle de tableau", cestmoi_get_icon_path("chatva.jpg"), false],
+    "plaqueslt"     => ["CON007", "Noter manuellement 11940 plaques d'immatriculation lituaniennes", cestmoi_get_icon_path("plaqueslt.jpg"), false],
+    "escalgolf"     => ["Escalade > Golf", "Je voulais refaire de l'escalade moi, pas du golf de merde !", cestmoi_get_icon_path("escalgolf.jpg"), false],
+    "mpi"     => ["Mπ", "Calculer Pi (≈3.141589) sur 1244 cœurs pendant 180s dans les sous-sols du STPI", cestmoi_get_icon_path("mpi.jpg"), false],
+    "pwnhotel"     => ["Pawn stars", "Copier le badge de l'hôtel immédiatement après être arrivé pour un CTF", cestmoi_get_icon_path("pwnhotel.jpg"), false],
+    "sanslesmains"     => ["Sans les mains !", "Jouer à Minecraft avec les options d'accessibilités de macos", cestmoi_get_icon_path("sanslesmains.jpg"), false],
+    // other
+    "asp"     => ["ASP", "Astrasia Space Program, ou comment faire décoller des pétards fabriqués avec des tubes de tente.", cestmoi_get_icon_path("asp.jpg"), false],
+
 ];
 
 function send_websocket_achievement(string $achievement_id, ?string $tag = "") : void {
@@ -34,16 +58,18 @@ function has_achievement(string $achievement_id, ?PDO $dbm = null): array
     $dbm ??= dbmConnect();
 
     $stmt = $dbm->prepare('SELECT * FROM achievements WHERE qsj_id = ? AND achievement_id = ? LIMIT 1');
-    $count = $stmt->rowcount();
     $stmt->execute([$_USER["id"], htmlspecialchars($achievement_id)]);
-    if ($count) return $stmt->fetch();
+    $count = $stmt->rowcount();
+    // print_r($stmt->fetchAll());
+    // echo "count $count: qsj_id=" . $_USER["id"] . " achievement_id=$achievement_id";
+    if ($count > 0) return $stmt->fetch();
     else return [];
 }
 
 function add_achievement(string $achievement_id, string $tags = "", ?PDO $dbm = null): bool
 {
     global $_USER;
-    if (!$_USER) return [];
+    if (!$_USER) return false;
     $dbm ??= dbmConnect();
 
     $res = has_achievement($achievement_id, $dbm);
