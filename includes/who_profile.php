@@ -46,10 +46,10 @@ function increment_bon_points(int $amount, ?string $dest = null, ?PDO $dbm = nul
     if ($res == []) return;
 
     if ($dest) {
-        $sql = "UPDATE member_profile SET points = points + ? WHERE username = ?";
+        $sql = "UPDATE user_info SET points = points + ? WHERE username = ?";
         $dbm->prepare($sql)->execute([$amount, $dest]);
     } else {
-        $sql = "UPDATE member_profile SET points = points + ? WHERE qsj_id = ?";
+        $sql = "UPDATE user_info SET points = points + ? WHERE qsj_id = ?";
         $dbm->prepare($sql)->execute([$amount, $_USER["id"]]);
     }
 }

@@ -13,6 +13,12 @@ function is_qsj_connected(): bool
     return $_USER !== null;
 }
 
+function require_qsj_connected()
+{
+    global $_QSJ;
+    $_QSJ->requireAuth();
+}
+
 function get_qsj_username(): bool
 {
     global $_USER;
@@ -24,7 +30,8 @@ foreach ($files as $file) {
     include_once($file);
 }
 
-function cestmoi_setup_head() {
+function cestmoi_setup_head()
+{
     global $_USER, $_HEAD_SETUP;
     if (!$_USER || $_HEAD_SETUP) return;
     $_HEAD_SETUP = true;
@@ -32,7 +39,8 @@ function cestmoi_setup_head() {
     include_once(__DIR__ . "/includes/styles/head.php");
 }
 
-function cestmoi_setup_foot() {
+function cestmoi_setup_foot()
+{
     global $_USER, $_FOOT_SETUP;
     if (!$_USER || $_FOOT_SETUP) return;
     $_FOOT_SETUP = true;
