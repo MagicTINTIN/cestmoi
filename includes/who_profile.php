@@ -10,8 +10,8 @@ function do_profile_exists(?PDO $dbm = null): array
     $dbm ??= dbmConnect();
 
     $stmt = $dbm->prepare('SELECT * FROM user_info WHERE qsj_id = ? OR username = ? LIMIT 1');
-    $count = $stmt->rowcount();
     $stmt->execute([$_USER["id"], $_USER["username"]]);
+    $count = $stmt->rowcount();
     if ($count) return $stmt->fetch();
     else return [];
 }
@@ -42,7 +42,7 @@ function increment_bon_points(int $amount, ?string $dest = null, ?PDO $dbm = nul
     if (!$_USER) return;
     $dbm ??= dbmConnect();
 
-    $res = do_profile_exists();
+    $res = get_who_profile_or_initialize();
     if ($res == []) return;
 
     if ($dest) {
