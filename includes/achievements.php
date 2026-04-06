@@ -14,9 +14,12 @@ function cestmoi_get_icon_path($icon) : string {
 $_ACHIEVEMENTS = [
     "first_login"    => ["C'est un petit pas", "Se connecter pour la toute première fois", cestmoi_get_icon_path("first_login.jpg"), true],
     "collector"      => ["Collectionneur", "Déverrouiller 10 achievements", cestmoi_get_icon_path("collector.jpg"), true],
-    "cestbien"     => ["C'est bien", "Cumuler plus de 10 000 bon points", cestmoi_get_icon_path("cestbien.jpg"), true],
+    "richesse"     => ["C'est bien", "Cumuler plus de 100 bon points", cestmoi_get_icon_path("richesse.jpg"), true],
     "easter"     => ["Chasseur d'œufs", "A trouvé tous les œufs de Pâques du site magictintin.fr", cestmoi_get_icon_path("easter.jpg"), true],
-    "easter"     => ["Micasender", "Envoyer un message sur micasend", cestmoi_get_icon_path("micasend.jpg"), true],
+    "micasender"     => ["Micasender", "Envoyer un message sur micasend", cestmoi_get_icon_path("micasender.jpg"), true],
+    "bttp"     => ["Retour vers le passé", "Voyager dans le temps", cestmoi_get_icon_path("bttp.jpg"), true],
+    "cpoi"     => ["Téléportation", "Copier coller du texte d'un ordinateur à l'autre avec CPOI", cestmoi_get_icon_path("cpoi.jpg"), true],
+    "chatcpt"     => ["ChatCPT", "Insulter un pauvre chat qui comprend rien", cestmoi_get_icon_path("chatcpt.jpg"), true],
     // unobtainable
     "nexistepas"     => ["N'existe pas", "Contrairement à cet achievement qui existe", cestmoi_get_icon_path("nexistepas.jpg"), false],
     "existetil"     => ["Existe-t-il ?", "Achievement shrödingeresque", cestmoi_get_icon_path("existetil.jpg"), false],
