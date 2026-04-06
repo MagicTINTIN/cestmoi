@@ -6,6 +6,7 @@ $_USER = $_QSJ->getUser(true);
 $_HEAD_SETUP = false;
 $_FOOT_SETUP = false;
 $_WEBSOCKET_INSERTED = false;
+$_ACHIEVEMENT_NOTIFICATIONS = "";
 
 function is_qsj_connected(): bool
 {

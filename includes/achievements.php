@@ -43,15 +43,22 @@ $_ACHIEVEMENTS = [
 ];
 
 function send_websocket_achievement(string $achievement_id, ?string $tag = "") : void {
+    $notif = get_json_websocket_achievement($achievement_id, $tag);
+    if ($notif == []) return;
+    send_websocket_notification($notif);
+}
+
+function get_json_websocket_achievement(string $achievement_id, ?string $tag = "", ?bool $string = false) : array|string {
     global $_ACHIEVEMENTS;
-    if (!key_exists($achievement_id, $_ACHIEVEMENTS)) return;
+    if (!key_exists($achievement_id, $_ACHIEVEMENTS)) return $string ? "" : [];
     $ach = $_ACHIEVEMENTS[$achievement_id];
-    $notif = [
+
+    $arr = [
         "type" => "new_achievement",
         "name" => $tag == "" ? $ach[0] : $ach[0] . " ($tag)",
         "icon" => $ach[2]
     ];
-    send_websocket_notification($notif);
+    return $string ? json_encode($arr) : $arr;
 }
 
 function has_achievement(string $achievement_id, ?PDO $dbm = null): array
