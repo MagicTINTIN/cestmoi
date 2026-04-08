@@ -85,16 +85,30 @@ function add_achievement(string $achievement_id, string $tags = "", ?PDO $dbm = 
     $res = has_achievement($achievement_id, $dbm);
     if ($res != []) return false;
 
+    get_who_profile_or_initialize($dbm);
+
     $stmt = $dbm->prepare(
         'INSERT INTO achievements (qsj_id, achievement_id, properties) VALUES (?, ?, ?)'
     );
     $stmt->execute([$_USER["id"], htmlspecialchars($achievement_id), htmlspecialchars($tags)]);
 
     send_websocket_achievement($achievement_id);
+
+    if (!has_achievement("collector", $dbm))
+    {
+        $stmt = $dbm->prepare('SELECT * FROM achievements WHERE qsj_id = ?');
+        $stmt->execute([$_USER["id"], htmlspecialchars($achievement_id)]);
+	$count = $stmt->rowcount();
+	if ($count >= 10)
+	    add_achievement_tag("collector", "10", $dbm);
+    }
     return true;
 }
 
 function has_achievement_tag(string $achievement_id, string $tag, ?PDO $dbm = null) : bool {
+    global $_USER;
+    if (!$_USER) return false;
+    $dbm ??= dbmConnect();
     $ach = has_achievement($achievement_id, $dbm);
     
     if ($ach == []) return false;
@@ -104,6 +118,9 @@ function has_achievement_tag(string $achievement_id, string $tag, ?PDO $dbm = nu
 }
 
 function add_achievement_tag(string $achievement_id, string $tag, ?PDO $dbm = null) : bool {
+    global $_USER;
+    if (!$_USER) return false;
+    $dbm ??= dbmConnect();
     $ach = has_achievement($achievement_id, $dbm);
     
     if ($ach == []) {
@@ -113,6 +130,8 @@ function add_achievement_tag(string $achievement_id, string $tag, ?PDO $dbm = nu
 
     $arr = get_tag_array($ach["properties"]);
     if (in_array($tag, $arr)) return false;
+    
+    get_who_profile_or_initialize($dbm);
     array_push($arr, $tag);
     $new_tags = implode(",", $arr);
     $stmt = $dbm->prepare("UPDATE achievements SET properties = ? WHERE qsj_id = ? AND achievement_id = ?");
