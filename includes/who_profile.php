@@ -52,4 +52,8 @@ function increment_bon_points(int $amount, ?string $dest = null, ?PDO $dbm = nul
         $sql = "UPDATE user_info SET points = points + ? WHERE qsj_id = ?";
         $dbm->prepare($sql)->execute([$amount, $_USER["id"]]);
     }
+    $newpoints = $res["points"] + $amount;
+    $main_points_count = get_main_number($newpoints, [100, 500, 666]);
+	if ($main_points_count > 0 && !has_achievement_tag("richesse", "$main_points_count",  $dbm))
+	    add_achievement_tag("richesse", "$main_points_count", $dbm);
 }

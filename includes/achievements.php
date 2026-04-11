@@ -13,8 +13,8 @@ function cestmoi_get_icon_path($icon) : string {
 // id => [name, description, icon, obtainable]
 $_ACHIEVEMENTS = [
     "first_login"    => ["C'est un petit pas", "Se connecter pour la toute première fois", cestmoi_get_icon_path("first_login.jpg"), true],
-    "collector"      => ["Collectionneur", "Déverrouiller 10 achievements", cestmoi_get_icon_path("collector.jpg"), true],
-    "richesse"     => ["C'est bien", "Cumuler plus de 100 bon points", cestmoi_get_icon_path("richesse.jpg"), true],
+    "collector"      => ["Collectionneur", "Déverrouiller de nombreux achievements", cestmoi_get_icon_path("collector.jpg"), true],
+    "richesse"     => ["C'est bien", "Cumuler beaucoup de bon points", cestmoi_get_icon_path("richesse.jpg"), true],
     "easter"     => ["Chasseur d'œufs", "A trouvé tous les œufs de Pâques du site magictintin.fr", cestmoi_get_icon_path("easter.jpg"), true],
     "micasender"     => ["Micasender", "Envoyer un message sur micasend", cestmoi_get_icon_path("micasender.jpg"), true],
     "bttp"     => ["Retour vers le passé", "Voyager dans le temps", cestmoi_get_icon_path("bttp.jpg"), true],
@@ -70,8 +70,6 @@ function has_achievement(string $achievement_id, ?PDO $dbm = null): array
     $stmt = $dbm->prepare('SELECT * FROM achievements WHERE qsj_id = ? AND achievement_id = ? LIMIT 1');
     $stmt->execute([$_USER["id"], htmlspecialchars($achievement_id)]);
     $count = $stmt->rowcount();
-    // print_r($stmt->fetchAll());
-    // echo "count $count: qsj_id=" . $_USER["id"] . " achievement_id=$achievement_id";
     if ($count > 0) return $stmt->fetch();
     else return [];
 }
@@ -94,14 +92,14 @@ function add_achievement(string $achievement_id, string $tags = "", ?PDO $dbm = 
 
     send_websocket_achievement($achievement_id);
 
-    if (!has_achievement("collector", $dbm))
-    {
-        $stmt = $dbm->prepare('SELECT * FROM achievements WHERE qsj_id = ?');
-        $stmt->execute([$_USER["id"], htmlspecialchars($achievement_id)]);
+    increment_bon_points(8, null, $dbm);
+    
+    $stmt = $dbm->prepare('SELECT * FROM achievements WHERE qsj_id = ?');
+    $stmt->execute([$_USER["id"]]);
 	$count = $stmt->rowcount();
-	if ($count >= 10)
-	    add_achievement_tag("collector", "10", $dbm);
-    }
+    $main_achievements_count = get_main_number($count);
+	if ($main_achievements_count > 0 && !has_achievement_tag("collector", "$main_achievements_count",  $dbm))
+	    add_achievement_tag("collector", "$main_achievements_count", $dbm);
     return true;
 }
 
@@ -136,6 +134,8 @@ function add_achievement_tag(string $achievement_id, string $tag, ?PDO $dbm = nu
     $new_tags = implode(",", $arr);
     $stmt = $dbm->prepare("UPDATE achievements SET properties = ? WHERE qsj_id = ? AND achievement_id = ?");
     $stmt->execute([$new_tags, $ach["qsj_id"], $achievement_id]);
+
+    increment_bon_points(4, null, $dbm);
     
     send_websocket_achievement($achievement_id, $tag);
     return true;
