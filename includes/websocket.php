@@ -27,5 +27,5 @@ function send_websocket_notification($content): void
     );
 
     if (strlen($msg) > 0)
-        $_ACHIEVEMENT_NOTIFICATIONS .= "\nhandleMsg(JSON.parse(`". trim($msg) . "`));\n";
+        $_ACHIEVEMENT_NOTIFICATIONS .= "\ncestmoi_handleMsg(JSON.parse(`". trim($msg) . "`));\n";
 }

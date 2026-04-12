@@ -8,6 +8,12 @@ $_FOOT_SETUP = false;
 $_WEBSOCKET_INSERTED = false;
 $_ACHIEVEMENT_NOTIFICATIONS = "";
 
+function is_bot(): bool
+{
+    global $_QSJ;
+    return $_QSJ->isNonInteractiveBrowser();
+}
+
 function is_qsj_connected(): bool
 {
     global $_USER;

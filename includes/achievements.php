@@ -20,6 +20,7 @@ $_ACHIEVEMENTS = [
     "bttp"     => ["Retour vers le passé", "Voyager dans le temps", cestmoi_get_icon_path("bttp.jpg"), true],
     "cpoi"     => ["Téléportation", "Copier coller du texte d'un ordinateur à l'autre avec CPOI", cestmoi_get_icon_path("cpoi.jpg"), true],
     "chatcpt"     => ["ChatCPT", "Insulter un pauvre chat qui comprend rien", cestmoi_get_icon_path("chatcpt.jpg"), true],
+    // "joingame"     => ["Jouons !", "Rejoindre une partie sur un des jeux de games.magictintin.fr", cestmoi_get_icon_path("joingame.jpg"), true],
     // unobtainable
     "nexistepas"     => ["N'existe pas", "Contrairement à cet achievement qui existe", cestmoi_get_icon_path("nexistepas.jpg"), false],
     "existetil"     => ["Existe-t-il ?", "Achievement shrödingeresque", cestmoi_get_icon_path("existetil.jpg"), false],
