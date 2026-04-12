@@ -5,26 +5,26 @@
     }
 
     let clientID = genId();
-    let ws = null,
-        pingIv = null;
+    let cestmoi_ws = null,
+        cestmoi_pingIv = null;
 
     function connectWS(cb) {
         console.log("connected")
-        if (ws) {
+        if (cestmoi_ws) {
             try {
-                ws.close();
+                cestmoi_ws.close();
             } catch (e) {}
         }
-        clearInterval(pingIv);
-        ws = new WebSocket('wss://magictintin.fr/ws');
+        clearInterval(cestmoi_pingIv);
+        cestmoi_ws = new WebSocket('wss://magictintin.fr/ws');
 
-        ws.onopen = () => {
+        cestmoi_ws.onopen = () => {
             ping();
-            pingIv = setInterval(ping, 30000); // keep-alive < 100s Cloudflare timeout
+            cestmoi_pingIv = setInterval(ping, 30000); // keep-alive < 100s Cloudflare timeout
             if (cb) cb();
         };
 
-        ws.onmessage = e => {
+        cestmoi_ws.onmessage = e => {
             const body = e.data;
             if (body === 'ping') return;
             try {
@@ -35,24 +35,24 @@
             } catch (err) {}
         };
 
-        ws.onclose = () => {
-            clearInterval(pingIv);
+        cestmoi_ws.onclose = () => {
+            clearInterval(cestmoi_pingIv);
             setTimeout(() => connectWS(), 3500);
         };
 
-        ws.onerror = () => {};
+        cestmoi_ws.onerror = () => {};
     }
 
     function ping() {
-        if (ws?.readyState === 1) {
-            ws.send(`cestmoi/<?php echo $_USER["username"] ?>:ping`);
+        if (cestmoi_ws?.readyState === 1) {
+            cestmoi_ws.send(`cestmoi/<?php echo $_USER["username"] ?>:ping`);
             // console.log("ping sent");
         }
     }
 
     function send(type, data = {}) {
-        if (ws?.readyState === 1)
-            ws.send(`cestmoi/<?php echo $_USER["username"] ?>:${JSON.stringify({ type, from: clientID, ...data })}`);
+        if (cestmoi_ws?.readyState === 1)
+            cestmoi_ws.send(`cestmoi/<?php echo $_USER["username"] ?>:${JSON.stringify({ type, from: clientID, ...data })}`);
     }
 
     function handleMsg(msg) {
